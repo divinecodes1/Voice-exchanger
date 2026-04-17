@@ -61,7 +61,54 @@ Use Resemble AI:
 VOICE_PROVIDER=resemble
 RESEMBLE_API_KEY=your_key
 RESEMBLE_VOICE_UUID=your_voice_uuid
+RESEMBLE_API_BASE=https://app.resemble.ai/api/v2
+RESEMBLE_CALLBACK_URI=https://your-domain.com/resemble-webhook
+RESEMBLE_STREAM_URL=https://f.cluster.resemble.ai/stream
+RESEMBLE_SYNTHESIS_URL=https://f.cluster.resemble.ai/synthesize
 ```
+
+## Resemble Method 2 (Create, Upload, Build)
+
+Create an empty voice:
+
+```powershell
+python .\scripts\resemble_create_voice.py --name "Alex" --voice-type rapid --callback-uri "https://your-domain.com/resemble-webhook"
+```
+
+Upload recordings one-by-one:
+
+```powershell
+python .\scripts\resemble_upload_recording.py --file ".\sample_01.wav" --name "sample_01" --text "Transcript of the audio"
+```
+
+Start training/build:
+
+```powershell
+python .\scripts\resemble_build_voice.py
+```
+
+Wait until training finishes:
+
+```powershell
+python .\scripts\resemble_build_voice.py --wait --poll-interval 10 --timeout 1800
+```
+
+Optional fill mode:
+
+```powershell
+python .\scripts\resemble_build_voice.py --fill
+```
+
+List voices and recordings:
+
+```powershell
+python .\scripts\resemble_list_voices.py
+python .\scripts\resemble_list_recordings.py --voice-uuid "YOUR_VOICE_UUID"
+```
+
+Recommended data volume:
+- Rapid: at least 3 active recordings (about 10+ seconds total)
+- Professional: at least 20 active recordings (about 10+ minutes total)
 
 Use Voicemod:
 

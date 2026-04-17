@@ -1,7 +1,9 @@
 (function () {
   const SAMPLE_RATE = 16000;
   const FRAME_SIZE = 320;
-  const DEFAULT_WS_URL = "ws://localhost:8080";
+  const query = new URLSearchParams(window.location.search);
+  const wsPort = query.get("wsPort") || "8080";
+  const DEFAULT_WS_URL = `ws://localhost:${wsPort}`;
 
   const startButton = document.getElementById("startButton");
   const stopButton = document.getElementById("stopButton");
@@ -153,9 +155,10 @@
         latencyEl.textContent = String(latencyMs);
       };
 
-      socket.onclose = () => {
+      socket.onclose = (event) => {
         if (stopButton.disabled === false) {
-          setStatus("Server disconnected");
+          const reason = event.reason || `code ${event.code}`;
+          setStatus(`Server disconnected (${reason})`);
         }
       };
 

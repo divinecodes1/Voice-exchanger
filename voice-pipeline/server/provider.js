@@ -31,14 +31,16 @@ async function createVoiceProvider(options) {
 function createResembleProvider({ connectionId, onAudio, onStatus }) {
   const apiKey = requireEnv("RESEMBLE_API_KEY");
   const voiceUuid = requireEnv("RESEMBLE_VOICE_UUID");
-  const ws = new WebSocket("wss://app.resemble.ai/stream", {
+  const rawStreamUrl = process.env.RESEMBLE_STREAM_URL || "https://f.cluster.resemble.ai/stream";
+  const streamUrl = toWebSocketUrl(rawStreamUrl);
+  const ws = new WebSocket(streamUrl, {
     headers: {
       Authorization: `Bearer ${apiKey}`
     }
   });
 
   ws.on("open", () => {
-    onStatus(`resemble connected for ${connectionId}`);
+    onStatus(`resemble connected for ${connectionId} (${streamUrl})`);
     ws.send(JSON.stringify({
       voice_uuid: voiceUuid,
       sample_rate: 16000,
@@ -73,6 +75,26 @@ function createResembleProvider({ connectionId, onAudio, onStatus }) {
       ws.close();
     }
   };
+}
+
+function toWebSocketUrl(value) {
+  if (!value) {
+    throw new Error("RESEMBLE_STREAM_URL is empty");
+  }
+
+  if (value.startsWith("wss://") || value.startsWith("ws://")) {
+    return value;
+  }
+
+  if (value.startsWith("https://")) {
+    return `wss://${value.slice("https://".length)}`;
+  }
+
+  if (value.startsWith("http://")) {
+    return `ws://${value.slice("http://".length)}`;
+  }
+
+  throw new Error("RESEMBLE_STREAM_URL must start with https://, http://, wss://, or ws://");
 }
 
 module.exports = { createVoiceProvider };
