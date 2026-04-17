@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>In-House Voice Transformer</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel">
+        <p class="eyebrow">Local 16 kHz PCM pipeline</p>
+        <h1>In-House Voice Transformer</h1>
+        <p class="lede">Start the microphone, stream 20 ms chunks through your local model, and monitor live playback latency.</p>
+
+        <div class="controls">
+          <button id="startButton" type="button">Start</button>
+          <button id="stopButton" type="button" disabled>Stop</button>
+        </div>
+
+        <dl class="stats" aria-label="Pipeline status">
+          <div>
+            <dt>Status</dt>
+            <dd id="status">Idle</dd>
+          </div>
+          <div>
+            <dt>Latency</dt>
+            <dd><span id="latency">0</span> ms</dd>
+          </div>
+          <div>
+            <dt>Chunks</dt>
+            <dd id="chunks">0</dd>
+          </div>
+          <div>
+            <dt>Output Stream</dt>
+            <dd id="streamState">Not exposed</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="routing">
+        <h2>Routing</h2>
+        <p>Use a virtual audio device such as VB-Cable or BlackHole when another app needs the transformed voice as its microphone input.</p>
+        <p>The renderer also exposes <code>window._voiceOutputStream</code> for local integrations.</p>
+      </section>
+    </main>
+
+    <script src="./pipeline.js"></script>
+  </body>
+</html>
